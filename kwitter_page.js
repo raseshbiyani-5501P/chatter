@@ -1,75 +1,83 @@
-var firebaseConfig = {
-  apiKey: "AIzaSyBqOYBORWlGuWNVuT-vVIullWbBGWxIOGY",
-  authDomain: "newpew-abcb4.firebaseapp.com",
-  databaseURL: "https://newpew-abcb4.firebaseio.com",
-  projectId: "newpew-abcb4",
-  storageBucket: "newpew-abcb4.appspot.com",
-  messagingSenderId: "949329081940",
-  appId: "1:949329081940:web:e65641ae4284c415addfc1",
-  measurementId: "G-T98V7TFQ2J"
-};
-// Initialize Firebase
-firebase.initializeApp(firebaseConfig);
+// Your web app's Firebase configuration
+  // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+  var firebaseConfig = {
+      apiKey: "AIzaSyCXoNLUpidXoeaA-fmEzxxj0hXAOY0Diyg",
+      authDomain: "kwitter-27083.firebaseapp.com",
+      databaseURL: "https://kwitter-27083-default-rtdb.firebaseio.com",
+      projectId: "kwitter-27083",
+      storageBucket: "kwitter-27083.appspot.com",
+      messagingSenderId: "669124631718",
+      appId: "1:669124631718:web:34d45aa5a461cb63412867",
+      measurementId: "G-YMRQBVN5FD"
+    };
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    firebase.analytics();
 
-user_name = localStorage.getItem("user_name");
-room_name = localStorage.getItem("room_name");
-console.log(room_name);
+    user_name = localStorage.getItem("user_name");
+    room_name = localStorage.getItem("room_name");
 
-function send() {
-  msg = document.getElementById("msg").value;
-  firebase.database().ref(room_name).push({
-    name: user_name,
-    message: msg,
-    like: 0
-  });
+function send(){
 
-  document.getElementById("msg").value = "";
-}
-//making a function to get the data from the database
-function getData() {
-  firebase.database().ref("/" + room_name).on('value', function (snapshot) {
-    document.getElementById("output").innerHTML = "";
-    snapshot.forEach(function (childSnapshot) {
-      childKey = childSnapshot.key;
-      childData = childSnapshot.val();
-      if (childKey != "purpose") {
-        firebase_message_id = childKey;
-        message_data = childData;
+msg = document.getElementById("msg").value;
+firebase.database().ref(room_name).push({
 
-        //start code
-        //getting the datafrom the database
+      name:user_name,
+      message:msg,
+      like:0
+});
 
-        console.log(message_data);
-        
-        name = message_data['name']; //keyfolder was name
-        message = message_data['message']; //keyfolder was message
-        like = message_data['like']; //keyfolder was like
-        row = "<h4> " + name + "<img class='user_tick' src='tick.png'></h4><h4 class='message_h4'>" + message + "</h4><button class='btn btn-warning' id='" + firebase_message_id + "' value='" + like + "' onclick='updateLike(this.id)'><span class='glyphicon glyphicon-thumbs-up'>Like: " + like + "</span></button><hr>";
-        document.getElementById("output").innerHTML += row;
+      document.getElementById("msg").value = "";
 
+    }
 
-        //end code
-      }
-    });
-  });
-}
-//calling the function
+function getData() { firebase.database().ref("/"+room_name).on('value', function(snapshot) { document.getElementById("output").innerHTML = ""; snapshot.forEach(function(childSnapshot) { childKey  = childSnapshot.key; childData = childSnapshot.val(); if(childKey != "purpose") {
+         firebase_message_id = childKey;
+         message_data = childData;
+//Start code
+
+console.log(firebase_message_id);
+console.log(message_data);
+
+name1 = message_data['name'];
+message = message_data['message'];
+like = message_data['like'];
+
+name_with_tag = "<h4>'+name1+'<img class='user_tick' src='tick.png'></h4>";
+
+message_with_tag = "<h4 class='message_h4'>'+message+'</h4>";
+
+like_button = "<button class='btn btn-warning' id='+firebase_message_id+' onclick='update_likes(this.id)' value='+like+'>";
+
+span_with_tag = "<span class='glyphicon glyphicon-thumbs-up'>LIKE : '+like+'</span> </button><hr>";
+
+row = name_with_tag + message_with_tag + like_button + span_with_tag;
+
+output = document.getElementById("output").innerHTML +=row;
+
+//End code
+      } });  }); }
 getData();
 
-function updateLike(message_id) {
-  button_id = message_id;
-  likes = document.getElementById(button_id).value; //getting the value form id
-  likes_in_number = Number(likes) + 1; //converting it into number format
-  console.log(likes_in_number);
+function update_likes(message_id){
 
-  firebase.database().ref(room_name).child(message_id).update({
-    like: likes_in_number  //update the likes on database
-  });
+button_id = message_id;
+likes = document.getElementById(button_id).value;
+updated_likes = Number(likes)+1;
+console.log(updated_likes);
 
+firebase.database().ref(room_name).child(message_id).update({
+
+      like : updated_likes      
+      });
+      
 }
 
-function logout() {
-  localStorage.removeItem("user_name");
-  localStorage.removeItem("room_name");
-  window.location.replace("kwitter.html");
+function logout(){
+
+localStorage.removeItem("user_name");
+localStorage.removeItem("room_name");
+
+window.location = "index.html";
+
 }
